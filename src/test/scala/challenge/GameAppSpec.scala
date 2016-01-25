@@ -18,6 +18,9 @@ class GameAppSpec extends Specification with Mockito {
         new GameApp(input).start()
       }
       out.toString must endWith("Thank you for playing\n")
+      there was one(input).chooseMode()
+      there was one(input).wantToContinue()
+
     }
     "allow to play in Human vs Computer mode" in {
       val input = mock[InputParser]

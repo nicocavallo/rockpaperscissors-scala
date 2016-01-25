@@ -21,7 +21,7 @@ class GameApp(in: InputParser) {
         val p2 = Player.random("Computer 2")
         println(s"${p1.name} chose '${p1.move}'")
         println(s"${p2.name} chose '${p2.move}'")
-        new Game(p1, p2).play()  match {
+        new Game(p1, p2).play() match {
           case Win(player) => println(s"The winner is '$player'")
           case Tie => println("It was a Tie")
         }
