@@ -1,11 +1,13 @@
 package challenge
 
-object Moves {
+import scala.util.Random
 
-  sealed trait Move
-  case object Rock extends Move
-  case object Paper extends Move
-  case object Scissors extends Move
+object Move extends Enumeration {
+  def random: Move = values.toList(Random.nextInt(values.size))
+
+  type Move = Value
+
+  val Rock,Paper,Scissors = Value
 
   def compare(m1: Move, m2: Move): Int = (m1,m2) match {
     case (Rock,Rock) => 0
@@ -18,4 +20,5 @@ object Moves {
     case (Scissors,Rock) => 1
     case (Scissors,Paper) => -1
   }
+
 }

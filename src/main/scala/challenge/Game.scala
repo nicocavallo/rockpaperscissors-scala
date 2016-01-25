@@ -2,7 +2,7 @@ package challenge
 
 case class Game(p1: Player, p2:Player) {
 
-  def play():GameResult = Moves.compare(p1.move,p2.move) match {
+  def play():GameResult = Move.compare(p1.move,p2.move) match {
     case 0 => Tie
     case -1 => Win(p1)
     case 1 => Win(p2)
