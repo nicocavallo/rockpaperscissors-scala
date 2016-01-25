@@ -1,6 +1,5 @@
 package challenge
 
-case class Player(name: String, move:Move)
+import challenge.Moves.Move
 
-sealed trait Move
-case object Rock extends Move
+case class Player(name: String, move:Move)
