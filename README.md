@@ -12,7 +12,7 @@ About the tests:
 
 * challenge.GameSpec: Tests game logic
 * challenge.InputParserSpec: Tests parsing from the standard input
-* challenge.GameAppSpec: Tests the integration between game logic and input parser.
+* challenge.GameAppSpec: Tests the GameApp by mocking its collaborator InputParser.
 
 To run the app:
 
