@@ -4,19 +4,22 @@ import java.io.StringReader
 import challenge.Move.{Rock, Paper,Scissors}
 
 import org.specs2.mutable.Specification
-
+import InputParserSpec._
 /**
  * Created by Nicolas on 25/01/2016.
  */
 class InputParserSpec extends Specification{
-
-  import InputParserSpec._
 
   "An InputParser" should {
     "parse a move" in {
       createParser("R\n").chooseMove() === Rock
       createParser("P\n").chooseMove() === Paper
       createParser("S\n").chooseMove() === Scissors
+    }
+    "parse a move even in lower case" in {
+      createParser("r\n").chooseMove() === Rock
+      createParser("p\n").chooseMove() === Paper
+      createParser("s\n").chooseMove() === Scissors
     }
     "parse a move after some failed attempts" in {
       createParser("T\nR\n").chooseMove() === Rock

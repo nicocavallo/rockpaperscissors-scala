@@ -10,6 +10,6 @@ libraryDependencies ++= Seq("org.specs2" %% "specs2-core" % "3.7" % "test",
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xfatal-warnings")
 
 // Coverage
-coverageMinimum := 80
+coverageMinimum := 90
 
 coverageFailOnMinimum := true

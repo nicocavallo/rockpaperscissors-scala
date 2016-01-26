@@ -13,29 +13,26 @@ object GameApp extends App {
 
 class GameApp(in: InputParser) {
 
+  private def printResult(result: GameResult): Unit = result match {
+    case Win(player) => println(s"The winner is '$player'")
+    case Tie => println("It was a Tie")
+  }
+
+  private def printMatch(p1:Player, p2:Player): Unit = {
+    println(s"${p1.name} chose '${p1.move}'")
+    println(s"${p2.name} chose '${p2.move}'")
+    printResult(new Game(p1, p2).play())
+  }
+
   def start(): Unit = {
     println("Starting a new Game")
     in.chooseMode() match {
       case ComputerVsComputer =>
-        val p1 = Player.random("Computer 1")
-        val p2 = Player.random("Computer 2")
-        println(s"${p1.name} chose '${p1.move}'")
-        println(s"${p2.name} chose '${p2.move}'")
-        new Game(p1, p2).play() match {
-          case Win(player) => println(s"The winner is '$player'")
-          case Tie => println("It was a Tie")
-        }
+        printMatch(Player.random("Computer 1"), Player.random("Computer 2"))
       case UserVsComputer =>
         val name = in.chooseName()
         val move = in.chooseMove()
-        val p1 = Player(name, move)
-        val p2 = Player.random("Computer")
-        println(s"${p1.name} chose '${p1.move}'")
-        println(s"${p2.name} chose '${p2.move}'")
-        new Game(p1, p2).play()  match {
-          case Win(player) => println(s"The winner is '$player'")
-          case Tie => println("It was a Tie")
-        }
+        printMatch(Player(name, move), Player.random("Computer"))
     }
     in.wantToContinue() match {
       case Continue => start()
@@ -46,14 +43,14 @@ class GameApp(in: InputParser) {
 }
 
 class InputParser(in: Reader) {
-  val ModeSelectionPrompt =
+  val modeSelectionPrompt =
     """
       |Please choose a mode:
-      |1.  Player vs Computer
+      |1.  Human vs Computer
       |2.  Computer vs Computer
 """.stripMargin
 
-  val MoveSelectionPrompt =
+  val moveSelectionPrompt =
     """
       |Please, choose a move:
       |[R]. Rock
@@ -62,7 +59,7 @@ class InputParser(in: Reader) {
 """.stripMargin
 
   def chooseMode(): GameMode = Console.withIn(in) {
-    def chooseModeRec(): GameMode = StdIn.readLine(ModeSelectionPrompt) match {
+    def chooseModeRec(): GameMode = StdIn.readLine(modeSelectionPrompt) match {
       case "1" => UserVsComputer
       case "2" => ComputerVsComputer
       case _ =>
@@ -73,7 +70,7 @@ class InputParser(in: Reader) {
   }
 
   def wantToContinue(): Action = Console.withIn(in) {
-    def wantToContinueRec():Action = StdIn.readLine("Do you want to continue?(Y/N) ").toUpperCase match {
+    def wantToContinueRec(): Action = StdIn.readLine("Do you want to continue?(Y/N) ").toUpperCase match {
       case "Y" => Continue
       case "N" => Exit
       case _ =>
@@ -92,7 +89,7 @@ class InputParser(in: Reader) {
   }
 
   def chooseMove(): Move = Console.withIn(in) {
-    def chooseMoveRec(): Move = StdIn.readLine(MoveSelectionPrompt) match {
+    def chooseMoveRec(): Move = StdIn.readLine(moveSelectionPrompt).toUpperCase match {
       case "R" => Rock
       case "P" => Paper
       case "S" => Scissors

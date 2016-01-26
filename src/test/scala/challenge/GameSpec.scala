@@ -1,10 +1,10 @@
 package challenge
 
 import org.specs2.mutable.Specification
+import GameSpec._
+import Move._
 
 class GameSpec extends Specification {
-
-  import GameSpec._
 
   "A Game" should {
     "end up in a Tie if both player make the same move" in {
@@ -33,8 +33,6 @@ class GameSpec extends Specification {
 }
 
 object GameSpec {
-
-  import Move._
 
   def playGame(withPlayer:Player, andPlayer: Player) =
     new Game(withPlayer,andPlayer).play()
