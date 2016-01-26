@@ -13,13 +13,8 @@ class GameAppSpec extends Specification with Mockito {
       val input = mock[InputParser]
       input.chooseMode() returns ComputerVsComputer
       input.wantToContinue() returns Exit
-      val out = new ByteArrayOutputStream()
-      Console.withOut(out) {
-        new GameApp(input).start()
-      }
-      out.toString must endWith("Thank you for playing\n")
-      there was one(input).chooseMode()
-      there was one(input).wantToContinue()
+      new GameApp(input).start()
+      there was one(input).chooseMode() andThen one(input).wantToContinue()
 
     }
     "allow to play in Human vs Computer mode" in {
@@ -28,25 +23,23 @@ class GameAppSpec extends Specification with Mockito {
       input.chooseName() returns "Nicolas"
       input.chooseMove() returns Rock
       input.wantToContinue() returns Exit
-      val out = new ByteArrayOutputStream()
-      Console.withOut(out) {
-        new GameApp(input).start()
-      }
-      out.toString must endWith("Thank you for playing\n")
+      new GameApp(input).start()
+      there was one(input).chooseMode() andThen
+        one(input).chooseName() andThen
+        one(input).chooseMove() andThen
+        one(input).wantToContinue()
     }
     "allow to play two matches in different modes" in {
       val input = mock[InputParser]
-      input.chooseMode() returns UserVsComputer
+      input.chooseMode() returns UserVsComputer thenReturns ComputerVsComputer
       input.chooseName() returns "Nicolas"
       input.chooseMove() returns Rock
-      input.wantToContinue() returns Continue
-      input.chooseMode() returns ComputerVsComputer
-      input.wantToContinue() returns Exit
-      val out = new ByteArrayOutputStream()
-      Console.withOut(out) {
-        new GameApp(input).start()
-      }
-      out.toString must endWith("Thank you for playing\n")
+      input.wantToContinue() returns Continue thenReturns Exit
+      new GameApp(input).start()
+      there were two(input).chooseMode()
+      there was one(input).chooseName()
+      there was one(input).chooseMove()
+      there were two(input).wantToContinue()
     }
   }
 }
