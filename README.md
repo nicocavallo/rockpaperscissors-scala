@@ -3,20 +3,40 @@ Rock Paper Scissors - Scala Version
 
 This is an attempt to solve eBay Coding challenge
 
-To compile and run tests:
+MVP includes
+* Command line interface
+* Human vs Computer Mode
+* Computer vs Computer Mode
+
+Command line playable version
+-----------------------------
+
+To run the app from the command line:
+
+```
+sbt run
+```
+
+To compile and run tests
+-------------------------
 
 ```
 sbt clean test
 ```
-About the tests:
+About the tests
+---------------
 
 * challenge.GameSpec: Tests game logic
 * challenge.InputParserSpec: Tests parsing from the standard input
 * challenge.GameAppSpec: Tests the GameApp by mocking its collaborator InputParser.
 
-To run the app:
+Code is mostly covered
+----------------------
+
+To run coverage reports:
 
 ```
-sbt run
+sbt clean coverage test coverageReport
 ```
+
 
