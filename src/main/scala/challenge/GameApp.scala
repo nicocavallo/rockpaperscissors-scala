@@ -1,17 +1,22 @@
 package challenge
 
-import java.io.{Reader, InputStreamReader, InputStream, OutputStream}
-
-import challenge.Move.{Move, Paper, Rock, Scissors}
+import java.io.{Reader, InputStreamReader}
 
 import scala.io.StdIn
 
 object GameApp extends App {
   val input = new InputParser(new InputStreamReader(System.in))
-  new GameApp(input).start()
+  if (args.length > 0 && args(0) == "extended") {
+    val app = new GameApp(input) with RockPaperScissorsSpockLizard
+    app.start()
+  } else {
+    val app = new GameApp(input) with RockPaperScissors
+    app.start()
+  }
+
 }
 
-class GameApp(in: InputParser) {
+class GameApp(in: InputParser) { self:GameContext =>
 
   private def printResult(result: GameResult): Unit = result match {
     case Win(player) => println(s"The winner is '$player'")
@@ -21,18 +26,18 @@ class GameApp(in: InputParser) {
   private def printMatch(p1:Player, p2:Player): Unit = {
     println(s"${p1.name} chose '${p1.move}'")
     println(s"${p2.name} chose '${p2.move}'")
-    printResult(new Game(p1, p2).play())
+    printResult(play(p1,p2))
   }
 
   def start(): Unit = {
     println("Starting a new Game")
     in.chooseMode() match {
       case ComputerVsComputer =>
-        printMatch(Player.random("Computer 1"), Player.random("Computer 2"))
+        printMatch(randomPlayer("Computer 1"), randomPlayer("Computer 2"))
       case UserVsComputer =>
         val name = in.chooseName()
-        val move = in.chooseMove()
-        printMatch(Player(name, move), Player.random("Computer"))
+        val move = in.chooseMove(moves)
+        printMatch(Player(name, move), randomPlayer("Computer"))
     }
     in.wantToContinue() match {
       case Continue => start()
@@ -48,14 +53,6 @@ class InputParser(in: Reader) {
       |Please choose a mode:
       |1.  Human vs Computer
       |2.  Computer vs Computer
-""".stripMargin
-
-  val moveSelectionPrompt =
-    """
-      |Please, choose a move:
-      |[R]. Rock
-      |[P]. Paper
-      |[S]. Scissors
 """.stripMargin
 
   def chooseMode(): GameMode = Console.withIn(in) {
@@ -88,11 +85,14 @@ class InputParser(in: Reader) {
     chooseNameRec()
   }
 
-  def chooseMove(): Move = Console.withIn(in) {
-    def chooseMoveRec(): Move = StdIn.readLine(moveSelectionPrompt).toUpperCase match {
-      case "R" => Rock
-      case "P" => Paper
-      case "S" => Scissors
+  def chooseMove(moves:List[Move]): Move = Console.withIn(in) {
+    val movesToString = moves.zipWithIndex.map {
+      case (m,p) => s"${p+1}. $m"
+    } mkString "\n"
+    val moveSelectionPrompt = s"Please select a move:\n$movesToString\n"
+
+    def chooseMoveRec(): Move = StdIn.readLine(moveSelectionPrompt) match {
+      case n if n.forall(_.isDigit) && n.toInt > 0 && n.toInt <= moves.size => moves(n.toInt - 1)
       case _ =>
         println("Error!")
         chooseMoveRec()

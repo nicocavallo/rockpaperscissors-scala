@@ -1,7 +1,6 @@
 package challenge
 
 import java.io.StringReader
-import challenge.Move.{Rock, Paper,Scissors}
 
 import org.specs2.mutable.Specification
 import InputParserSpec._
@@ -10,20 +9,23 @@ import InputParserSpec._
  */
 class InputParserSpec extends Specification{
 
+  val moves = List(Rock,Paper, Scissors)
+
   "An InputParser" should {
     "parse a move" in {
-      createParser("R\n").chooseMove() === Rock
-      createParser("P\n").chooseMove() === Paper
-      createParser("S\n").chooseMove() === Scissors
-    }
-    "parse a move even in lower case" in {
-      createParser("r\n").chooseMove() === Rock
-      createParser("p\n").chooseMove() === Paper
-      createParser("s\n").chooseMove() === Scissors
+      createParser("1\n").chooseMove(moves) === Rock
+      createParser("2\n").chooseMove(moves) === Paper
+      createParser("3\n").chooseMove(moves) === Scissors
     }
     "parse a move after some failed attempts" in {
-      createParser("T\nR\n").chooseMove() === Rock
-      createParser("T\nA\nR\n").chooseMove() === Rock
+      createParser("T\n1\n").chooseMove(moves) === Rock
+      createParser("T\nA\n1\n").chooseMove(moves) === Rock
+    }
+    "parse a move after entering 0 (should be >0)" in {
+      createParser("0\n1\n").chooseMove(moves) === Rock
+    }
+    "parse a move after entering 5 (should be <= moves.size)" in {
+      createParser("5\n1\n").chooseMove(moves) === Rock
     }
     "parse a game mode selection" in {
       createParser("1\n").chooseMode() === UserVsComputer
