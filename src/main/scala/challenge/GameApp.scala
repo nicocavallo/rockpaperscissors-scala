@@ -6,14 +6,10 @@ import scala.io.StdIn
 
 object GameApp extends App {
   val input = new InputParser(new InputStreamReader(System.in))
-  if (args.length > 0 && args(0) == "extended") {
-    val app = new GameApp(input) with RockPaperScissorsSpockLizard
-    app.start()
-  } else {
-    val app = new GameApp(input) with RockPaperScissors
-    app.start()
+  val app = args.headOption.find(_ == "extended").fold( new GameApp(input) with RockPaperScissors ){ _ => 
+    new GameApp(input) with RockPaperScissorsSpockLizard
   }
-
+  app.start()
 }
 
 class GameApp(in: InputParser) { self:GameContext =>
